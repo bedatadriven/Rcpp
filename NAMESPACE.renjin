@@ -1,0 +1,11 @@
+
+
+# Renjin-specific NAMESPACE declaration
+
+# Current work in supporting Rcpp in Renjin is focused on compiling packages that make
+# use of Rcpp headers during compilation of C++ code, so for the most part we are excluding 
+# all runtime features of Rcpp
+
+
+
+# (Empty: no exports)
