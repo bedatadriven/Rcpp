@@ -49,16 +49,12 @@
   
   <distributionManagement>
     <repository>
-      <id>renjin-release</id>
-      <name>Renjin Releases</name>
-      <url>https://nexus.bedatadriven.com/content/repositories/renjin-release/</url>
+      <id>renjin-packages</id>
+      <name>Renjin CI Repository</name>
+      <url>http://nexus.bedatadriven.com/content/repositories/renjin-packages</url>
     </repository>
-    <snapshotRepository>
-      <id>renjin-latest</id>
-      <name>Renjin Latest Builds</name>
-      <url>https://nexus.bedatadriven.com/content/repositories/renjin-latest/</url>
-    </snapshotRepository>
   </distributionManagement>
+  
   <build>
     <plugins>
       <plugin>
