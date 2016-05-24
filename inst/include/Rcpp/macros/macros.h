@@ -30,30 +30,30 @@
 #define BEGIN_RCPP                                                                               \
     int rcpp_output_type = 0 ;                                                                   \
     SEXP rcpp_output_condition = R_NilValue ;                                                    \
-    try {
+    //try {
 #endif
 
 #ifndef VOID_END_RCPP
 #define VOID_END_RCPP                                                                            \
-    }                                                                                            \
-    catch( Rcpp::internal::InterruptedException &__ex__) {                                       \
-        rcpp_output_type = 1 ;                                                                   \
-    }                                                                                            \
-    catch( std::exception& __ex__ ){                                                             \
-       rcpp_output_type = 2 ;                                                                    \
-       rcpp_output_condition = PROTECT(exception_to_r_condition(__ex__)) ;                       \
-    } catch( ... ){                                                                              \
-       rcpp_output_type = 2 ;                                                                    \
-       rcpp_output_condition = PROTECT(string_to_try_error("c++ exception (unknown reason)")) ;  \
-    }                                                                                            \
-    if( rcpp_output_type == 1 ){                                                                 \
-       Rf_onintr() ;                                                                             \
-    }                                                                                            \
-    if( rcpp_output_type == 2 ){                                                                 \
-       SEXP stop_sym  = Rf_install( "stop" ) ;                                                   \
-       SEXP expr = PROTECT( Rf_lang2( stop_sym , rcpp_output_condition ) ) ;                     \
-       Rf_eval( expr, R_GlobalEnv ) ;                                                            \
-    }
+    //}                                                                                            \
+//    catch( Rcpp::internal::InterruptedException &__ex__) {                                       \
+//        rcpp_output_type = 1 ;                                                                   \
+//    }                                                                                            \
+//    catch( std::exception& __ex__ ){                                                             \
+//       rcpp_output_type = 2 ;                                                                    \
+//       rcpp_output_condition = PROTECT(exception_to_r_condition(__ex__)) ;                       \
+//    } catch( ... ){                                                                              \
+//       rcpp_output_type = 2 ;                                                                    \
+//       rcpp_output_condition = PROTECT(string_to_try_error("c++ exception (unknown reason)")) ;  \
+//    }                                                                                            \
+//    if( rcpp_output_type == 1 ){                                                                 \
+//       Rf_onintr() ;                                                                             \
+//    }                                                                                            \
+//    if( rcpp_output_type == 2 ){                                                                 \
+//       SEXP stop_sym  = Rf_install( "stop" ) ;                                                   \
+//       SEXP expr = PROTECT( Rf_lang2( stop_sym , rcpp_output_condition ) ) ;                     \
+//       Rf_eval( expr, R_GlobalEnv ) ;                                                            \
+//    }
 #endif
 
 #ifndef END_RCPP
