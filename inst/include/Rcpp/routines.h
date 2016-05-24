@@ -75,15 +75,23 @@ namespace Rcpp {
 
     namespace internal{
         inline attribute_hidden unsigned long enterRNGScope(){
+#ifdef _RENJIN
+            return 0;
+#else
             typedef unsigned long (*Fun)(void);
             static Fun fun = GET_CALLABLE("enterRNGScope");
             return fun();
+#endif
         }
 
         inline attribute_hidden unsigned long exitRNGScope(){
+#ifdef _RENJIN
+            return 0;
+#else
             typedef unsigned long (*Fun)(void);
             static Fun fun = GET_CALLABLE("exitRNGScope");
             return fun();
+#endif
         }
 
         inline attribute_hidden char* get_string_buffer(){
@@ -204,9 +212,13 @@ inline attribute_hidden const char* char_nocheck( SEXP x){
 }
 
 inline attribute_hidden void* dataptr(SEXP x){
+#ifdef _RENJIN
+    return DATAPTR(x);
+#else
     typedef void* (*Fun)(SEXP);
     static Fun fun = GET_CALLABLE("dataptr");
     return fun(x);
+#endif
 }
 
 inline attribute_hidden Rcpp::Module* getCurrentScope(){
