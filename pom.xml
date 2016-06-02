@@ -7,29 +7,6 @@
   <properties>
     <renjin.version>0.9.0-SNAPSHOT</renjin.version>
   </properties>
-  <dependencies>
-    <dependency>
-      <groupId>org.renjin</groupId>
-      <artifactId>renjin-core</artifactId>
-      <version>${renjin.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.renjin</groupId>
-      <artifactId>renjin-gnur-runtime</artifactId>
-      <version>${renjin.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.renjin</groupId>
-      <artifactId>stats</artifactId>
-      <version>${renjin.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.renjin</groupId>
-      <artifactId>hamcrest</artifactId>
-      <version>${renjin.version}</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
   <repositories>
     <repository>
       <id>bedatadriven-public</id>
