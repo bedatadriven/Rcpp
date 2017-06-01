@@ -75,7 +75,7 @@ namespace Rcpp {
 
     namespace internal{
         inline attribute_hidden unsigned long enterRNGScope(){
-#ifdef _RENJIN
+#ifdef RENJIN
             return 0;
 #else
             typedef unsigned long (*Fun)(void);
@@ -85,7 +85,7 @@ namespace Rcpp {
         }
 
         inline attribute_hidden unsigned long exitRNGScope(){
-#ifdef _RENJIN
+#ifdef RENJIN
             return 0;
 #else
             typedef unsigned long (*Fun)(void);
@@ -212,7 +212,7 @@ inline attribute_hidden const char* char_nocheck( SEXP x){
 }
 
 inline attribute_hidden void* dataptr(SEXP x){
-#ifdef _RENJIN
+#ifdef RENJIN
     return DATAPTR(x);
 #else
     typedef void* (*Fun)(SEXP);
