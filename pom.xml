@@ -58,7 +58,7 @@
             </goals>
             <phase>process-classes</phase>
             <configuration>
-              <namespaceFile>NAMESPACE.renjin</namespaceFile>
+              <namespaceFile>NAMESPACE</namespaceFile>
               <sourceDirectory>R.renjin</sourceDirectory>
             </configuration>
           </execution>
