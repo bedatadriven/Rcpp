@@ -7,9 +7,9 @@ Define an R Function with a C++ Implementation
 Dynamically define an R function with C++ source code. Compiles and links a shared library with bindings to the C++ function then defines an R function that uses \code{.Call} to invoke the library.
 }
 \usage{
-cppFunction(code, depends = character(), plugins = character(),
-            includes = character(), env = parent.frame(), rebuild = FALSE, 
-            showOutput = verbose, verbose = getOption("verbose"))
+cppFunction(code, depends = character(), plugins = character(), includes = character(),
+            env = parent.frame(), rebuild = FALSE, cacheDir = getOption("rcpp.cache.dir", 
+            tempdir()), showOutput = verbose, verbose = getOption("verbose"))
 }
 
 \arguments{
@@ -20,7 +20,7 @@ cppFunction(code, depends = character(), plugins = character(),
     Character vector of packages that the compilation depends on. Each package listed will first be queried for an \link[inline:plugins]{inline plugin} to determine header files to include. If no plugin is defined for the package then a header file based the package's name (e.g. \code{PkgName.h}) will be included.
 }
   \item{plugins}{
-    Character vector of \link[inline:plugins]{inline plugins} to use for the compliation.
+    Character vector of \link[inline:plugins]{inline plugins} to use for the compilation.
   }
   \item{includes}{
     Character vector of user includes (inserted after the includes provided by \code{depends}).
@@ -30,6 +30,9 @@ cppFunction(code, depends = character(), plugins = character(),
 }
   \item{rebuild}{
     Force a rebuild of the shared library.
+}
+  \item{cacheDir}{
+    Directory to use for caching shared libraries. If the underlying code passed to \code{sourceCpp} has not changed since the last invocation then a cached version of the shared library is used. The default value of \code{tempdir()} results in the cache being valid only for the current R session. Pass an alternate directory to preserve the cache across R sessions.
 }
   \item{showOutput}{
     \code{TRUE} to print \code{R CMD SHLIB} output to the console.

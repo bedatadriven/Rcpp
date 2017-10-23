@@ -2,7 +2,7 @@
 //
 // Datetime.h: Rcpp R/C++ interface class library -- Datetime (POSIXct)
 //
-// Copyright (C) 2010 - 2015  Dirk Eddelbuettel and Romain Francois
+// Copyright (C) 2010 - 2016  Dirk Eddelbuettel and Romain Francois
 //
 // This file is part of Rcpp.
 //
@@ -23,6 +23,10 @@
 #define Rcpp__Datetime_h
 
 #include <RcppCommon.h>
+
+#if defined(WIN32) || defined(__WIN32) || defined(__WIN32__)
+#include <time.h>
+#endif
 
 namespace Rcpp {
 
@@ -55,6 +59,7 @@ namespace Rcpp {
 
         // Minimal set of date operations.
         friend Datetime  operator+( const Datetime &dt, double offset);
+        friend Datetime  operator+( const Datetime &dt, int offset);
         friend double    operator-( const Datetime &dt1, const Datetime& dt2);
         friend bool      operator<( const Datetime &dt1, const Datetime& dt2);
         friend bool      operator>( const Datetime &dt1, const Datetime& dt2);
@@ -65,6 +70,27 @@ namespace Rcpp {
 
         inline int is_na() const { return traits::is_na<REALSXP>(m_dt); }
 
+        operator double()  const { return m_dt; }
+
+        inline std::string format(const char *fmt = "%Y-%m-%d %H:%M:%S") const {
+            char txtiso[64], txtsec[64];
+            time_t t = static_cast<time_t>(std::floor(m_dt));
+            struct tm temp = *localtime(&t); // localtime, not gmtime
+            size_t res = ::strftime(txtiso, 63, fmt, &temp);
+            if (res == 0) {
+                return std::string("");
+            } else {
+                res = ::snprintf(txtsec, 63, "%s.%06d", txtiso, m_us);
+                if (res <= 0) {
+                    return std::string("");
+                } else {
+                    return std::string(txtsec);
+                }
+            }
+        }
+
+        friend inline std::ostream &operator<<(std::ostream & s, const Datetime d);
+
     private:
         double m_dt;            // fractional seconds since epoch
         struct tm m_tm;         // standard time representation
@@ -73,16 +99,22 @@ namespace Rcpp {
         // update m_tm based on m_dt
         void update_tm() {
             if (R_FINITE(m_dt)) {
-                time_t t = static_cast<time_t>(std::floor(m_dt));
+                double dt = std::floor(m_dt);
+                time_t t = static_cast<time_t>(dt);
                 m_tm = *gmtime_(&t);
                 // m_us is fractional (micro)secs as diff. between (fractional) m_dt and m_tm
-                m_us = static_cast<int>(::Rf_fround( (m_dt - t) * 1.0e6, 0.0));
+                m_us = static_cast<int>(::Rf_fround( (m_dt - dt) * 1.0e6, 0.0));
             } else {
                 m_dt = NA_REAL;         // NaN and Inf need it set
                 m_tm.tm_sec = m_tm.tm_min = m_tm.tm_hour = m_tm.tm_isdst = NA_INTEGER;
                 m_tm.tm_min = m_tm.tm_hour = m_tm.tm_mday = m_tm.tm_mon  = m_tm.tm_year = NA_INTEGER;
                 m_us = NA_INTEGER;
             }
+        }
+
+        // 1900 as per POSIX mktime() et al
+        static inline unsigned int baseYear() {
+            return 1900;
         }
 
     };
@@ -106,9 +138,20 @@ namespace Rcpp {
     inline Datetime operator+(const Datetime &datetime, double offset) {
         Datetime newdt(datetime.m_dt);
         newdt.m_dt += offset;
-        time_t t = static_cast<time_t>(std::floor(newdt.m_dt));
+        double dt = std::floor(newdt.m_dt);
+        time_t t = static_cast<time_t>(dt);
         newdt.m_tm = *gmtime_(&t);
-        newdt.m_us = static_cast<int>(::Rf_fround( (newdt.m_dt - t) * 1.0e6, 0.0));
+        newdt.m_us = static_cast<int>(::Rf_fround( (newdt.m_dt - dt) * 1.0e6, 0.0));
+        return newdt;
+    }
+
+    inline Datetime operator+(const Datetime &datetime, int offset) {
+        Datetime newdt(datetime.m_dt);
+        newdt.m_dt += offset;
+        double dt = std::floor(newdt.m_dt);
+        time_t t = static_cast<time_t>(dt);
+        newdt.m_tm = *gmtime_(&t);
+        newdt.m_us = static_cast<int>(::Rf_fround( (newdt.m_dt - dt) * 1.0e6, 0.0));
         return newdt;
     }
 
@@ -119,6 +162,11 @@ namespace Rcpp {
     inline bool    operator>=(const Datetime &d1, const Datetime& d2) { return d1.m_dt >= d2.m_dt; }
     inline bool    operator<=(const Datetime &d1, const Datetime& d2) { return d1.m_dt <= d2.m_dt; }
     inline bool    operator!=(const Datetime &d1, const Datetime& d2) { return d1.m_dt != d2.m_dt; }
+
+    inline std::ostream &operator<<(std::ostream & os, const Datetime d) {
+        os << d.format();
+        return os;
+    }
 
 }
 

@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.renjin.cran</groupId>
   <artifactId>Rcpp</artifactId>
-  <version>0.12.5-renjin-SNAPSHOT</version>
+  <version>0.13-renjin-SNAPSHOT</version>
   <properties>
     <renjin.version>0.9.0-SNAPSHOT</renjin.version>
   </properties>

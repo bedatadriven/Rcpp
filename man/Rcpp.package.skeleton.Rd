@@ -47,9 +47,7 @@ Rcpp.package.skeleton(name = "anRpackage", list = character(),
 	The \samp{NAMESPACE} gains a \code{useDynLib} directive as well
 	as an \code{importFrom(Rcpp, evalCpp} to ensure instantiation of Rcpp.
 	
-	The \samp{src} directory is created if it does not exists and 
-	a \samp{Makevars} file is added setting the environment variables
-	\samp{PKG_LIBS} to accomodate the necessary flags to link with the Rcpp library. 
+	The \samp{src} directory is created if it does not exists. 
 	
 	If \code{cpp_files} are provided then they will be copied to the \samp{src}
 	directory.
@@ -65,8 +63,11 @@ Rcpp.package.skeleton(name = "anRpackage", list = character(),
 	If the \code{attributes} argument is \code{TRUE}, then rather than generate
 	the example files as described above, a single \samp{rcpp_hello_world.cpp}
 	file is created in the \samp{src} directory and it's attributes are 
-	compiled using the \code{\link{compileAttributes}} function, so files
-	\samp{RcppExports.R} and \samp{RcppExports.cpp} are generated as well. 
+	compiled using the \code{\link{compileAttributes}} function. This leads to 
+	the files \samp{RcppExports.R} and \samp{RcppExports.cpp} being generated.
+	They are automatically regenerated from \emph{scratch} each time 
+	\code{\link{compileAttributes}} is called. Therefore, one should 
+	\strong{not} modify by hand either of the \samp{RcppExports} files.
 	
 	If the \code{module} argument is \code{TRUE}, a sample Rcpp module will 
 	be generated as well. 

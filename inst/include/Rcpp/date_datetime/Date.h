@@ -22,6 +22,10 @@
 #ifndef Rcpp__Date_h
 #define Rcpp__Date_h
 
+#if defined(WIN32) || defined(__WIN32) || defined(__WIN32__)
+#include <time.h>
+#endif
+
 namespace Rcpp {
 
     class Date {
@@ -98,6 +102,24 @@ namespace Rcpp {
            return traits::is_na<REALSXP>(m_d);
         }
 
+        operator double() const {
+            return m_d;
+        }
+
+        inline std::string format(const char *fmt = "%Y-%m-%d") const {
+            char txt[32];
+            struct tm temp = m_tm;
+            temp.tm_year -= baseYear();    // adjust for fact that system has year rel. to 1900
+            size_t res = ::strftime(txt, 31, fmt, &temp);
+            if (res == 0) {
+                return std::string("");
+            } else {
+                return std::string(txt);
+            }
+        }
+
+        friend inline std::ostream &operator<<(std::ostream & os, const Date d);
+
     private:
         double m_d;                 // (fractional) day number, relative to epoch of Jan 1, 1970
         struct tm m_tm;             // standard time representation
@@ -105,7 +127,7 @@ namespace Rcpp {
         // update m_tm based on m_d
         void update_tm() {
             if (R_FINITE(m_d)) {
-                time_t t = 24*60*60 * m_d;      // (fractional) days since epoch to seconds since epoch
+                time_t t = static_cast<time_t>(24*60*60 * m_d);      // (fractional) days since epoch to seconds since epoch
                 m_tm = *gmtime_(&t);
             } else {
                 m_tm.tm_sec = m_tm.tm_min = m_tm.tm_hour = m_tm.tm_isdst = NA_INTEGER;
@@ -136,7 +158,7 @@ namespace Rcpp {
     inline Date operator+(const Date &date, int offset) {
         Date newdate(date.m_d);
         newdate.m_d += offset;
-        time_t t = 24*60*60 * newdate.m_d;  // days since epoch to seconds since epo
+        time_t t = static_cast<time_t>(24*60*60 * newdate.m_d);  // days since epoch to seconds since epo
         newdate.m_tm = *gmtime_(&t);
         return newdate;
     }
@@ -148,6 +170,11 @@ namespace Rcpp {
     inline bool   operator>=(const Date &d1, const Date& d2) { return d1.m_d >= d2.m_d; }
     inline bool   operator<=(const Date &d1, const Date& d2) { return d1.m_d <= d2.m_d; }
     inline bool   operator!=(const Date &d1, const Date& d2) { return d1.m_d != d2.m_d; }
+
+    inline std::ostream &operator<<(std::ostream & os, const Date d) {
+        os << d.format();
+        return os;
+    }
 
     namespace internal {
 
